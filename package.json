@@ -1,0 +1,19 @@
+{
+  "name": "raspi-serial-number",
+  "version": "1.0.0",
+  "description": "Small library to get a Raspberry's Serial number without dependencies",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "raspberry pi",
+    "serial number"
+  ],
+  "author": "TheDSCPL",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.6.2"
+  }
+}
