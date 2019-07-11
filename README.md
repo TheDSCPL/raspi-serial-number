@@ -14,14 +14,60 @@
 
 ##Documentation
 
-####function getSerialNumber(callback: (error: any, data?: string) => void): void;
-Receives a callback function. If there is an error, the first parameter of the callback will be it. If not, the serial number will be passed to the second parameter.
-
-####function getSerialNumber(): Promise<string>;
+###Async - Promises
+```ts
+function getSerialNumber(): Promise<string>;
+```
 Almost the same as the previous one but returns a promise which will resolve into the serial number or reject with an exception.
 
-####function getSerialNumberSync(): string;
+###Async - Callback
+```ts
+function getSerialNumber(callback: (error: any, data?: string) => void): void;
+```
+Receives a callback function. If there is an error, the first parameter of the callback will be it. If not, the serial number will be passed to the second parameter.
+
+###Sync
+```ts
+function getSerialNumberSync(): string;
+```
 Returns Raspberry Pi's serial number string or throws an exception if there is an error.
+
+##Examples
+
+###### (Typescript definitions already included)
+
+###On ES5:
+`const {getSerialNumber, getSerialNumberSync} = require('raspi-serial-number');`
+
+###On ES6:
+`import {getSerialNumber, getSerialNumberSync} from 'raspi-serial-number';`
+
+###Async - Promises
+```ts
+getSerialNumber()
+    .then(d=>console.log("Promise result: ",d))
+    .catch(e=>console.log("Promise error: ",e));
+```
+
+###Async - Callback
+```ts
+getSerialNumber((error,data) => {
+    if(error)
+        console.error("Callback error: ",error);
+    else
+        console.log("Callback result: ",data)
+});
+```
+
+###Sync
+```ts
+try {
+    console.log("Sync result: ",getSerialNumberSync());
+} catch (e) {
+    console.error("Sync error: ",e);
+}
+```
+
 
 ##Future work
 * Add options to allow specifying whether or not the leftmost zeros should be trimmed or not (current behaviour is trimming the leftmost zeros of the serial number)
