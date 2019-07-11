@@ -1,4 +1,9 @@
 import fs from 'fs';
+import {resolve} from "dns";
+
+function isFunc<T>(o:T):T extends (...args: any[])=>any ? true : false {
+    return (!!o && {}.toString.call(o) === '[object Function]') as any;
+}
 
 function filterSerialNumber(data: string): string {
     const lines = data.split(/\r\n|\n/).filter(v=>v.indexOf("Serial")===0);
@@ -11,23 +16,66 @@ function filterSerialNumber(data: string): string {
     return matches[1].replace(/^0+/, '');
 }
 
-async function getSerialNumber(): Promise<string> {
-    return new Promise((resolve,reject) => {
-        try {
-            fs.readFile("/proc/cpuinfo","ascii",(err,data)=>{
-                if(err)
-                    reject(err);
-                else
-                    resolve(filterSerialNumber(data));
-            })
-        } catch (e) {
-            reject(e);
-        }
-    });
+function getSerialNumber(callback: (error: any,data?: string)=>void): void;
+async function getSerialNumber(): Promise<string>;
+
+function getSerialNumber(callback?: (error: any,data?: string)=>void): Promise<string>|void {
+    let innerCallback: (error: any, data?: string) => (Promise<string>|void);
+    let returnValue: Promise<string>|undefined = undefined;
+
+    if(callback && isFunc(callback)) {
+        innerCallback = (e,d)=>{
+            try {
+                let a: string|undefined;
+                if(typeof d === "string")
+                    a = filterSerialNumber(d);
+                callback(e,a);
+            } catch (e) {
+                callback(e);
+            }
+        };
+        returnValue = undefined;
+    } else {
+        let resolve: (d: string | PromiseLike<string> | undefined)=>void;
+        let reject: (e: any)=>void;
+        returnValue = new Promise((res,rej)=>{
+            resolve = res;
+            reject  = rej;
+        });
+        innerCallback = (e,d) => {
+            if(e)
+                reject(e);
+            else {
+                try {
+                    resolve(d===void 0 ? undefined : filterSerialNumber(d));
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        };
+    }
+
+    try {
+        fs.readFile("/proc/cpuinfo","ascii",(err,data)=>{
+            innerCallback(err,data);
+        })
+    } catch (e) {
+        innerCallback(e);
+    }
+
+    return returnValue;
 }
 
 function getSerialNumberSync(): string {
     return filterSerialNumber(fs.readFileSync("/proc/cpuinfo","ascii"));
 }
+
+/*getSerialNumber().then(d=>console.log("Promise result: ",d)).catch(e=>console.log("Promise error: ",e));
+getSerialNumber((e,d)=>{if(e) console.error("Callback error: ",e); else console.log("Callback result: ",d)});
+try {
+    console.log("Sync result: ",getSerialNumberSync());
+} catch (e) {
+    console.error("Sync error: ",e);
+}*/
 
 export {getSerialNumber, getSerialNumberSync};
