@@ -1,4 +1,4 @@
-#Raspberry Pi Serial Number
+#Raspberry Pi Serial Number [![11.15.0](https://badge.fury.io/js/raspi-serial-number.svg)](https://badge.fury.io/js/raspi-serial-number)
 
 **Warning:** Only works on *Raspberry Pi* boards! Will raise an exception if not running in a Raspberry Pi
 
