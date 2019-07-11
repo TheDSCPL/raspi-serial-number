@@ -37,10 +37,21 @@ Returns Raspberry Pi's serial number string or throws an exception if there is a
 ###### (Typescript definitions already included)
 
 ###On ES5:
-`const {getSerialNumber, getSerialNumberSync} = require('raspi-serial-number');`
+```js
+var rsn = require('raspi-serial-number');
+var getSerialNumber = rsn.getSerialNumber;
+var getSerialNumberSync = rsn.getSerialNumberSync;
+```
 
 ###On ES6:
-`import {getSerialNumber, getSerialNumberSync} from 'raspi-serial-number';`
+```ts
+import {getSerialNumber, getSerialNumberSync} from 'raspi-serial-number';
+```
+or
+
+```ts
+const {getSerialNumber, getSerialNumberSync} = require('raspi-serial-number');
+```
 
 ###Async - Promises
 ```ts
