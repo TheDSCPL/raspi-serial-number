@@ -1,5 +1,4 @@
 import fs from 'fs';
-import {resolve} from "dns";
 
 function isFunc<T>(o:T):T extends (...args: any[])=>any ? true : false {
     return (!!o && {}.toString.call(o) === '[object Function]') as any;
@@ -56,6 +55,7 @@ function getSerialNumber(callback?: (error: any,data?: string)=>void): Promise<s
     }
 
     try {
+        //https://raspberrypi.stackexchange.com/a/2087
         fs.readFile("/proc/cpuinfo","ascii",(err,data)=>{
             innerCallback(err,data);
         })
